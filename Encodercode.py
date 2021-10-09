@@ -28,18 +28,18 @@ y_train = y_train / 255.0
 noise_factor = 0.3
 noise_dataset = []
 for img in x_train:
-    noisy_image = img + noise_factor * np.random.randn(*img.shape)
-    noisy_image = np.clip(noisy_image, 0, 1)
-    noise_dataset.append(noisy_image)
+    nim = img + noise_factor * np.random.randn(*img.shape)
+    nim = np.clip(nim, 0, 1)
+    noise_dataset.append(nim)
     
 #noise test set
 noise_dataset = np.array(noise_dataset)
 noise_factor = 0.3
 noise_test_set = []
 for img in x_test:
-    noisy_image = img + noise_factor * np.random.randn(*img.shape)
-    noisy_image = np.clip(noisy_image, 0, 1)
-    noise_test_set.append(noisy_image)
+    nim = img + noise_factor * np.random.randn(*img.shape)
+    nim = np.clip(nim, 0, 1)
+    noise_test_set.append(nim)
     
 noise_test_set = np.array(noise_test_set)
 plt.imshow(noise_dataset[69], cmap = 'gray')
