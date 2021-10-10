@@ -8,7 +8,7 @@ import random
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
 plt.imshow(x_train[0], cmap = 'gray')
 
-#view data
+# data description
 l_grid = w_grid = 15
 fig, axes = plt.subplots(l_grid, w_grid, figsize = (17, 17))
 axes = axes.ravel()
@@ -24,27 +24,27 @@ for i in np.arange(0, w_grid * l_grid):
 x_train = x_train / 255.0
 y_train = y_train / 255.0
 
-#add noise
-noise_factor = 0.3
-noise_dataset = []
+#adding   noise by random function
+nf = 0.3
+noise_dataset= []
 for img in x_train:
-    nim = img + noise_factor * np.random.randn(*img.shape)
+    nim = img + nf * np.random.randn(*img.shape)
     nim = np.clip(nim, 0, 1)
-    noise_dataset.append(nim)
+     noise_dataset.append(nim)
     
-#noise test set
+#test noise data set
 noise_dataset = np.array(noise_dataset)
-noise_factor = 0.3
+nf= 0.3
 noise_test_set = []
 for img in x_test:
-    nim = img + noise_factor * np.random.randn(*img.shape)
+    nim = img + nf * np.random.randn(*img.shape)
     nim = np.clip(nim, 0, 1)
     noise_test_set.append(nim)
     
-noise_test_set = np.array(noise_test_set)
+noise_test_set= np.array(noise_test_set)
 plt.imshow(noise_dataset[69], cmap = 'gray')
 
-#autoencoder architecture
+#architecture of autoencoder 
 from tensorflow.keras.models import Sequential
 autoencoder = Sequential()
 
@@ -62,20 +62,21 @@ autoencoder.add(tf.keras.layers.Conv2DTranspose(filters = 1, kernel_size = 3, st
 autoencoder.compile(loss = 'binary_crossentropy', optimizer = tf.keras.optimizers.Adam(lr = 0.01))
 autoencoder.summary()
 
-#train
+#training
 autoencoder.fit(noise_dataset.reshape(-1, 28, 28, 1),
                x_train.reshape(-1, 28, 28, 1),
                epochs = 2,
                batch_size = 20,
                validation_data = (noise_test_set.reshape(-1, 28, 28, 1), x_test.reshape(-1, 28, 28, 1)))
            
-#accuracy
+#accuracy calculation
 evaluation = autoencoder.evaluate(noise_test_set.reshape(-1, 28, 28, 1), x_test.reshape(-1, 28, 28, 1))
 print('Test Loss : {:.3f}'.format(evaluation))
 
-#view output images
-predicted = autoencoder.predict(noise_test_set[:10].reshape(-1, 28, 28, 1))
+#Output images
+predicted =autoencoder.predict(noise_test_set[:10].reshape(-1, 28, 28, 1))
 fig, axes  = plt.subplots(nrows = 2, ncols = 10, sharex = True, sharey = True, figsize = (20, 4))
+
 for images, row in zip([noise_test_set[:10], predicted], axes):
     for img, ax in zip(images, row):
         ax.imshow(img.reshape((28, 28)), cmap = 'Greys_r')
